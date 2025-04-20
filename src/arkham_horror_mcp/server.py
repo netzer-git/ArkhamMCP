@@ -1,6 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from starlette.responses import PlainTextResponse
 import logging
+from typing import Optional
 
 app = FastAPI()
 
@@ -225,3 +226,29 @@ async def get_scenario_detail(scenario_id: str):
     """Temporary endpoint to get scenario HTML content."""
     html = await fetch_scenario_detail(scenario_id)
     return PlainTextResponse(html)
+
+@app.get("/search")
+async def search_arkham(
+    type: str = Query(..., description="Type of object: scenario, card, investigator, etc."),
+    name: Optional[str] = Query(None, description="Name or partial name to search for")
+):
+    """
+    Search for Arkham Horror LCG objects by type and name.
+    """
+    results = []
+    if type == "scenario":
+        scenarios = await fetch_arkham_scenarios()
+        if name:
+            results = [s for s in scenarios if name.lower() in s["title"].lower()]
+        else:
+            results = scenarios
+    # Placeholder for future card/investigator scraping
+    elif type == "card":
+        # TODO: Implement card scraping logic
+        results = [{"error": "Card search not implemented yet"}]
+    elif type == "investigator":
+        # TODO: Implement investigator scraping logic
+        results = [{"error": "Investigator search not implemented yet"}]
+    else:
+        results = [{"error": f"Unknown type: {type}"}]
+    return results
