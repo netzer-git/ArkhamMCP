@@ -1,3 +1,12 @@
+from fastapi import FastAPI
+from starlette.responses import PlainTextResponse
+
+app = FastAPI()
+
+@app.get("/")
+def root():
+    return PlainTextResponse("Arkham Horror MCP server is running.")
+
 import asyncio
 import httpx
 from bs4 import BeautifulSoup
@@ -60,6 +69,7 @@ async def handle_list_prompts() -> list[types.Prompt]:
             name="summarize-notes",
             description="Creates a summary of all notes",
             arguments=[
+
                 types.PromptArgument(
                     name="style",
                     description="Style of the summary (brief/detailed)",
