@@ -1,0 +1,11 @@
+{
+  "servers": {
+    "arkham-horror-mcp": {
+      "type": "stdio",
+      "command": ".venv\\Scripts\\python.exe",
+      "args": [
+        "-m", "uvicorn", "src.arkham_horror_mcp.server:app", "--reload"
+      ]
+    }
+  }
+}
