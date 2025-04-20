@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from starlette.responses import PlainTextResponse
+import logging
 
 app = FastAPI()
 
@@ -40,22 +41,25 @@ async def fetch_arkham_scenarios() -> list[dict]:
     Fetch Arkham Horror scenarios from arkhamcentral.com.
     Returns a list of dicts with 'id', 'title', and 'description'.
     """
-    url = "https://arkhamcentral.com/scenarios"
+    url = "https://arkhamcentral.com/index.php/fan-created-content-arkham-horror-lcg/"
     async with httpx.AsyncClient() as client:
         resp = await client.get(url)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "html.parser")
         scenarios = []
-        for item in soup.select(".scenario-listing .scenario-title"):
-            title = item.get_text(strip=True)
-            link = item.find("a")
-            href = link["href"] if link else ""
-            scenario_id = href.split("/")[-1] if href else title.lower().replace(" ", "-")
-            scenarios.append({
-                "id": scenario_id,
-                "title": title,
-                "description": f"Arkham Horror scenario: {title}",
-            })
+        # Find all links to scenarios in the fan-created content section
+        for link in soup.select(".entry-content a"):
+            href = link.get("href", "")
+            title = link.get_text(strip=True)
+            # Only include links that look like scenario pages
+            if href.startswith("https://arkhamcentral.com/index.php/") and title:
+                scenario_id = href.split("/")[-2] if href.endswith("/") else href.split("/")[-1]
+                scenarios.append({
+                    "id": scenario_id,
+                    "title": title,
+                    "description": f"Arkham Horror scenario: {title}",
+                    "url": href
+                })
         return scenarios
 
 @server.list_prompts()
@@ -205,3 +209,19 @@ async def main():
 
 # In-memory notes storage for prompt/tool demo
 notes = {}
+
+@app.get("/scenarios")
+async def get_scenarios():
+    """Temporary endpoint to list Arkham Horror scenarios."""
+    try:
+        scenarios = await fetch_arkham_scenarios()
+        return scenarios
+    except Exception as e:
+        logging.exception("Error fetching scenarios")
+        return PlainTextResponse(f"Error: {e}", status_code=500)
+
+@app.get("/scenarios/{scenario_id}")
+async def get_scenario_detail(scenario_id: str):
+    """Temporary endpoint to get scenario HTML content."""
+    html = await fetch_scenario_detail(scenario_id)
+    return PlainTextResponse(html)
