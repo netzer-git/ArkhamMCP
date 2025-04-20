@@ -242,13 +242,14 @@ async def search_arkham(
             results = [s for s in scenarios if name.lower() in s["title"].lower()]
         else:
             results = scenarios
-    # Placeholder for future card/investigator scraping
     elif type == "card":
-        # TODO: Implement card scraping logic
-        results = [{"error": "Card search not implemented yet"}]
+        results = [{
+            "error": "Card search is not available. ArkhamCentral.com does not provide a card database."
+        }]
     elif type == "investigator":
-        # TODO: Implement investigator scraping logic
-        results = [{"error": "Investigator search not implemented yet"}]
+        results = [{
+            "error": "Investigator search is not available. ArkhamCentral.com does not provide an investigator database."
+        }]
     else:
         results = [{"error": f"Unknown type: {type}"}]
     return results
