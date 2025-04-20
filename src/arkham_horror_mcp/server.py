@@ -202,3 +202,6 @@ async def main():
                 ),
             ),
         )
+
+# In-memory notes storage for prompt/tool demo
+notes = {}
