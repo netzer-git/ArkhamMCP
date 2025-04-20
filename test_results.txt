@@ -1,0 +1,50 @@
+Arkham Horror MCP Server Test Results - 2025-04-20 15:09:22
+==================================================
+
+
+--- Testing Root endpoint ---
+URL: http://localhost:8000/
+Exception occurred: All connection attempts failed
+
+
+--- Testing Scenarios list ---
+URL: http://localhost:8000/scenarios
+Exception occurred: All connection attempts failed
+
+
+--- Testing Cards list ---
+URL: http://localhost:8000/cards
+Exception occurred: All connection attempts failed
+
+
+--- Testing Basic scenario search ---
+URL: http://localhost:8000/search
+Params: {'type': 'scenario'}
+Exception occurred: All connection attempts failed
+
+
+--- Testing Fuzzy scenario search ---
+URL: http://localhost:8000/search
+Params: {'type': 'scenario', 'name': 'arkham', 'fuzzy': 'true'}
+Exception occurred: All connection attempts failed
+
+
+--- Testing Player count filtered search ---
+URL: http://localhost:8000/search
+Params: {'type': 'scenario', 'min_players': '2', 'max_players': '4'}
+Exception occurred: All connection attempts failed
+
+
+--- Testing Card search ---
+URL: http://localhost:8000/search
+Params: {'type': 'card', 'name': 'shotgun'}
+Exception occurred: All connection attempts failed
+
+
+--- Testing Investigator search with faction ---
+URL: http://localhost:8000/search
+Params: {'type': 'investigator', 'faction': 'guardian'}
+Exception occurred: All connection attempts failed
+
+
+Testing completed!
